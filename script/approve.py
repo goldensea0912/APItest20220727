@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import logging
 import unittest
 import requests
@@ -10,7 +11,7 @@ from utils import assert_utils
 class approve(unittest.TestCase):
     phone1 = '13033447711'
     phone2 = '13033447712'
-    realname = 'ÕÅÈı'
+    realname = 'å¼ ä¸‰'
     cardId = '110117199003070995'
 
     def setUp(self) -> None:
@@ -21,55 +22,55 @@ class approve(unittest.TestCase):
     def tearDown(self) -> None:
         self.session.close()
 
-    # ÈÏÖ¤³É¹¦
+    # è®¤è¯æˆåŠŸ
     def test01_approve_success(self):
-        # 1¡¢ÓÃ»§µÇÂ¼
+        # 1ã€ç”¨æˆ·ç™»å½•
         response = self.login_api.login(self.session)
         logging.info('login response = {}'.format(response.json()))
-        assert_utils(self, response, 200, 200, "µÇÂ¼³É¹¦")
-        # 2¡¢·¢ËÍÈÏÖ¤ÇëÇó
-        # ×¼±¸²ÎÊı
-        # µ÷ÓÃ½Ó¿Ú½Å±¾ÖĞ¶¨ÒåµÄ·½·¨·¢ËÍÇëÇó
+        assert_utils(self, response, 200, 200, "ç™»å½•æˆåŠŸ")
+        # 2ã€å‘é€è®¤è¯è¯·æ±‚
+        # å‡†å¤‡å‚æ•°
+        # è°ƒç”¨æ¥å£è„šæœ¬ä¸­å®šä¹‰çš„æ–¹æ³•å‘é€è¯·æ±‚
         response = self.approve_api.approve(self.session, self.realname, self.cardId)
-        # ¶Ô½á¹û½øĞĞ¶ÏÑÔ
-        assert_utils(self, response, 200, 200, "Ìá½»³É¹¦!")
+        # å¯¹ç»“æœè¿›è¡Œæ–­è¨€
+        assert_utils(self, response, 200, 200, "æäº¤æˆåŠŸ!")
 
-    # ÈÏÖ¤Ê§°Ü¡ª¡ªĞÕÃûÎª¿Õ
+    # è®¤è¯å¤±è´¥â€”â€”å§“åä¸ºç©º
     def test02_approve_realname_is_null(self):
-        # 1¡¢ÓÃ»§µÇÂ¼
+        # 1ã€ç”¨æˆ·ç™»å½•
         response = self.login_api.login(self.session, self.phone2)
         logging.info('login response = {}'.format(response.json()))
-        assert_utils(self, response, 200, 200, "µÇÂ¼³É¹¦")
-        # 2¡¢·¢ËÍÈÏÖ¤ÇëÇó _ ĞÕÃûÎª¿Õ
-        # ×¼±¸²ÎÊı
-        # µ÷ÓÃ½Ó¿Ú½Å±¾ÖĞ¶¨ÒåµÄ·½·¨·¢ËÍÇëÇó
+        assert_utils(self, response, 200, 200, "ç™»å½•æˆåŠŸ")
+        # 2ã€å‘é€è®¤è¯è¯·æ±‚ _ å§“åä¸ºç©º
+        # å‡†å¤‡å‚æ•°
+        # è°ƒç”¨æ¥å£è„šæœ¬ä¸­å®šä¹‰çš„æ–¹æ³•å‘é€è¯·æ±‚
         response = self.approve_api.approve(self.session, "", self.cardId)
         logging.info('approve response = {}'.format(response.json()))
-        # ¶Ô½á¹û½øĞĞ¶ÏÑÔ
-        assert_utils(self, response, 200, 100, "ĞÕÃû²»ÄÜÎª¿Õ")
+        # å¯¹ç»“æœè¿›è¡Œæ–­è¨€
+        assert_utils(self, response, 200, 100, "å§“åä¸èƒ½ä¸ºç©º")
 
-    # ÈÏÖ¤Ê§°Ü¡ª¡ªÉí·İÖ¤ºÅÎª¿Õ
+    # è®¤è¯å¤±è´¥â€”â€”èº«ä»½è¯å·ä¸ºç©º
     def test03_approve_cardId_is_null(self):
-        # 1¡¢ÓÃ»§µÇÂ¼
+        # 1ã€ç”¨æˆ·ç™»å½•
         response = self.login_api.login(self.session, self.phone2)
         logging.info('login response = {}'.format(response.json()))
-        assert_utils(self, response, 200, 200, "µÇÂ¼³É¹¦")
-        # 2¡¢·¢ËÍÈÏÖ¤ÇëÇó _ ĞÕÃûÎª¿Õ
-        # ×¼±¸²ÎÊı
-        # µ÷ÓÃ½Ó¿Ú½Å±¾ÖĞ¶¨ÒåµÄ·½·¨·¢ËÍÇëÇó
+        assert_utils(self, response, 200, 200, "ç™»å½•æˆåŠŸ")
+        # 2ã€å‘é€è®¤è¯è¯·æ±‚ _ å§“åä¸ºç©º
+        # å‡†å¤‡å‚æ•°
+        # è°ƒç”¨æ¥å£è„šæœ¬ä¸­å®šä¹‰çš„æ–¹æ³•å‘é€è¯·æ±‚
         response = self.approve_api.approve(self.session, self.realname, "")
         logging.info('approve response = {}'.format(response.json()))
-        # ¶Ô½á¹û½øĞĞ¶ÏÑÔ
-        assert_utils(self, response, 200, 100, "Éí·İÖ¤ºÅ²»ÄÜÎª¿Õ")
+        # å¯¹ç»“æœè¿›è¡Œæ–­è¨€
+        assert_utils(self, response, 200, 100, "èº«ä»½è¯å·ä¸èƒ½ä¸ºç©º")
 
-    # »ñÈ¡ÈÏÖ¤ĞÅÏ¢
+    # è·å–è®¤è¯ä¿¡æ¯
     def test04_get_approve(self):
-        # 1¡¢ÓÃ»§µÇÂ¼
+        # 1ã€ç”¨æˆ·ç™»å½•
         response = self.login_api.login(self.session, self.phone1)
         logging.info('login response = {}'.format(response.json()))
-        assert_utils(self, response, 200, 200, "µÇÂ¼³É¹¦")
-        # 2¡¢»ñÈ¡ÈÏÖ¤ÇëÇó
+        assert_utils(self, response, 200, 200, "ç™»å½•æˆåŠŸ")
+        # 2ã€è·å–è®¤è¯è¯·æ±‚
         response = self.approve_api.getApprove(self.session)
         logging.info('approve response = {}'.format(response.json()))
-        # ¶Ô½á¹û½øĞĞ¶ÏÑÔ
+        # å¯¹ç»“æœè¿›è¡Œæ–­è¨€
         self.assertEqual(200, response.status_code)

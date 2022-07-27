@@ -101,8 +101,8 @@ def read_param_data(filename, method_name, param_names):
     # 获取测试数据文件的文件路径
     file = app.BASE_DIR + "/data/" + filename
     test_case_data = []
-    with open(file, encoding="utf-8") as f:
-        # 将json字符串转换为字典格式
+    with open(file) as f:
+        # 将json字符串转换为字典格式 , encoding="utf-8"
         file_data = json.load(f)
         # 获取所有的测试数据的列表
         test_data_list = file_data.get(method_name)

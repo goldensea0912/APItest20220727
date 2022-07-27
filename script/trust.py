@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import unittest, logging, requests
 from random import random
 
@@ -16,49 +17,49 @@ class trust(unittest.TestCase):
     def tearDown(self) -> None:
         self.session.close()
 
-    # ¿ª»§ÇëÇó
+    # å¼€æˆ·è¯·æ±‚
     def test01_trust_request(self):
-        # 1¡¢ÈÏÖ¤Í¨¹ıµÄÕËºÅµÇÂ¼
+        # 1ã€è®¤è¯é€šè¿‡çš„è´¦å·ç™»å½•
         response = self.login_api.login(self.session)
         logging.info("login response = {}".format(response.json()))
-        assert_utils(self, response, 200, 200, "µÇÂ¼³É¹¦")
-        # 2¡¢ ·¢ËÍ¿ª»§ÇëÇó
+        assert_utils(self, response, 200, 200, "ç™»å½•æˆåŠŸ")
+        # 2ã€ å‘é€å¼€æˆ·è¯·æ±‚
         response = self.trust_api.trust_register(self.session)
         logging.info("trust register response = {}".format(response.json()))
         self.assertEqual(200, response.status_code)
         self.assertEqual(200, response.json().get("status"))
-        # 3¡¢ ·¢ËÍµÚÈı·½µÄ¿ª»§ÇëÇó
+        # 3ã€ å‘é€ç¬¬ä¸‰æ–¹çš„å¼€æˆ·è¯·æ±‚
         form_data = response.json().get("description").get("form")
         logging.info('form response={}'.format(form_data))
-        # µ÷ÓÃµÚÈı·½½Ó¿ÚµÄÇëÇó·½·¨
+        # è°ƒç”¨ç¬¬ä¸‰æ–¹æ¥å£çš„è¯·æ±‚æ–¹æ³•
         response = request_third_api(form_data)
-        # ¶ÏÑÔÏìÓ¦½á¹û
+        # æ–­è¨€å“åº”ç»“æœ
         self.assertEqual(200, response.status_code)
         self.assertEqual('UserRegister OK', response.text)
 
-    # ³äÖµ³É¹¦
+    # å……å€¼æˆåŠŸ
     def test02_recharge(self):
-        # 1¡¢µÇÂ¼³É¹¦
-        # 1¡¢ÈÏÖ¤Í¨¹ıµÄÕËºÅµÇÂ¼
+        # 1ã€ç™»å½•æˆåŠŸ
+        # 1ã€è®¤è¯é€šè¿‡çš„è´¦å·ç™»å½•
         response = self.login_api.login(self.session)
         logging.info("login response = {}".format(response.json()))
-        assert_utils(self, response, 200, 200, "µÇÂ¼³É¹¦")
-        # 2¡¢ »ñÈ¡³äÖµÑéÖ¤Âë
+        assert_utils(self, response, 200, 200, "ç™»å½•æˆåŠŸ")
+        # 2ã€ è·å–å……å€¼éªŒè¯ç 
         r = random()
         response = self.trust_api.get_recharge_verify_code(self.session, str(r))
         logging.info("get recharge verify code reponse = {}".format(response.text))
         self.assertEqual(200, response.status_code)
-        # 3¡¢ ·¢ËÍ³äÖµÇëÇó
+        # 3ã€ å‘é€å……å€¼è¯·æ±‚
         response = self.trust_api.recharge(self.session, '10000')
         logging.info("recharge response = {}".format(response.json()))
         self.assertEqual(200, response.status_code)
         self.assertEqual(200, response.json().get("status"))
-        # 4¡¢ ·¢ËÍµÚÈı·½³äÖµÇëÇó
-        # »ñÈ¡ÏìÓ¦ÖĞform±íµ¥µÄÊı¾İ£¬²¢ÌáÈ¡ÎªºóĞøµÚÈı·½ÇëÇóµÄ²ÎÊı
+        # 4ã€ å‘é€ç¬¬ä¸‰æ–¹å……å€¼è¯·æ±‚
+        # è·å–å“åº”ä¸­formè¡¨å•çš„æ•°æ®ï¼Œå¹¶æå–ä¸ºåç»­ç¬¬ä¸‰æ–¹è¯·æ±‚çš„å‚æ•°
         form_data = response.json().get("description").get("form")
         logging.info('form response={}'.format(form_data))
-        # µ÷ÓÃµÚÈı·½ÇëÇóµÄ½Ó¿Ú
+        # è°ƒç”¨ç¬¬ä¸‰æ–¹è¯·æ±‚çš„æ¥å£
         response = request_third_api(form_data)
         logging.info('third recharge response={}'.format(form_data))
-        # ¶ÏÑÔresponseÊÇ·ñÕıÈ·
+        # æ–­è¨€responseæ˜¯å¦æ­£ç¡®
         self.assertEqual('NetSave OK', response.text)

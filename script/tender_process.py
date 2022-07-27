@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import logging
 import random
 
@@ -39,100 +40,102 @@ class test_tender_process(unittest.TestCase):
         logging.info("delete sq2 = {}".format(sql4))
 
     def test01_register_success(self):
-        # ÇëÇóÍ¼Æ¬ÑéÖ¤Âë
+        # è¯·æ±‚å›¾ç‰‡éªŒè¯ç 
         r = random.random()
         response = self.login_api.getImgCode(self.session, str(r))
         self.assertEqual(200, response.status_code)
-        # ÇëÇó¶ÌĞÅÑéÖ¤Âë
+        # è¯·æ±‚çŸ­ä¿¡éªŒè¯ç 
         response = self.login_api.getSmsCode(self.session, self.phone, self.imVerifyCode)
         logging.info("sms verify response={}".format(response.json()))
-        assert_utils(self, response, 200, 200, "¶ÌĞÅ·¢ËÍ³É¹¦")
-        # ·¢ËÍ×¢²áÇëÇó
+        assert_utils(self, response, 200, 200, "çŸ­ä¿¡å‘é€æˆåŠŸ")
+        # å‘é€æ³¨å†Œè¯·æ±‚
         response = self.login_api.register(self.session, self.phone, 'test123')
+        print("888888", response.json())
+        logging.info("reg response={}".format(response))
         logging.info("reg response={}".format(response.json()))
-        # ¶ÏÑÔ
-        assert_utils(self, response, 200, 200, "×¢²á³É¹¦")
+        # æ–­è¨€
+        assert_utils(self, response, 200, 200, "æ³¨å†ŒæˆåŠŸ")
 
     def test02_login_success(self):
-        """µÇÂ¼³É¹¦"""
-        # ·¢ËÍµÇÂ¼ÇëÇó
+        """ç™»å½•æˆåŠŸ"""
+        # å‘é€ç™»å½•è¯·æ±‚
         response = self.login_api.login(self.session, self.phone, 'test123')
         logging.info("login response={}".format(response.json()))
-        # ¶ÏÑÔ
-        assert_utils(self, response, 200, 200, "µÇÂ¼³É¹¦")
+        # æ–­è¨€
+        assert_utils(self, response, 200, 200, "ç™»å½•æˆåŠŸ")
 
     def test03_trust_success(self):
-        """¿ª»§"""
-        # »ñÈ¡¿ª»§ĞÅÏ¢
+        """å¼€æˆ·"""
+        # è·å–å¼€æˆ·ä¿¡æ¯
         response = self.trust_api.trust_register(self.session)
         logging.info("trust response={}".format(response.json()))
-        # ¶ÏÑÔ»ñÈ¡µÄ¿ª»§ĞÅÏ¢ÊÇ·ñÕıÈ·
+        # æ–­è¨€è·å–çš„å¼€æˆ·ä¿¡æ¯æ˜¯å¦æ­£ç¡®
         self.assertEqual(200, response.status_code)
         self.assertEqual(200, response.json().get("status"))
-        # »ñÈ¡¿ª»§ĞÅÏ¢ÏìÓ¦ÖĞµÄHTMLÄÚÈİ£¨ÎªºóĞøÇëÇóµÄµØÖ·ºÍ²ÎÊı£©
+        # è·å–å¼€æˆ·ä¿¡æ¯å“åº”ä¸­çš„HTMLå†…å®¹ï¼ˆä¸ºåç»­è¯·æ±‚çš„åœ°å€å’Œå‚æ•°ï¼‰
         form_data = response.json().get("description").get("form")
         logging.info("form response={}".format(form_data))
-        # ·¢ËÍµÚÈı·½µÄÇëÇó£¬ÇëÇóµÚÈı·½½Ó¿Ú½øĞĞ¿ª»§
+        # å‘é€ç¬¬ä¸‰æ–¹çš„è¯·æ±‚ï¼Œè¯·æ±‚ç¬¬ä¸‰æ–¹æ¥å£è¿›è¡Œå¼€æˆ·
         response = request_third_api(form_data)
         logging.info("third-interface response={}".format(response.text))
-        # ¶ÏÑÔµÚÈı·½½Ó¿ÚÇëÇó´¦ÀíÊÇ·ñ³É¹¦
+        # æ–­è¨€ç¬¬ä¸‰æ–¹æ¥å£è¯·æ±‚å¤„ç†æ˜¯å¦æˆåŠŸ
         self.assertEqual('UserRegister OK', response.text)
 
     def test04_recharge_success(self):
-        """³äÖµ"""
-        # »ñÈ¡³äÖµÑéÖ¤Âë
+        """å……å€¼"""
+        # è·å–å……å€¼éªŒè¯ç 
         r = random.random()
         response = self.trust_api.get_recharge_verify_code(self.session, str(r))
         self.assertEqual(200, response.status_code)
         logging.info("get_recharge_code response={}".format(response.text))
 
-        # ³äÖµ
+        # å……å€¼
         amount = '1000'
         response = self.trust_api.recharge(self.session, amount)
         logging.info("recharge response={}".format(response.text))
-        # ¶ÏÑÔ»ñÈ¡µÄ¿ª»§ĞÅÏ¢ÊÇ·ñÕıÈ·
+        # æ–­è¨€è·å–çš„å¼€æˆ·ä¿¡æ¯æ˜¯å¦æ­£ç¡®
         self.assertEqual(200, response.status_code)
         self.assertEqual(200, response.json().get("status"))
-        # »ñÈ¡¿ª»§ĞÅÏ¢ÏìÓ¦ÖĞµÄHTMLÄÚÈİ£¨ÎªºóĞøÇëÇóµÄµØÖ·ºÍ²ÎÊı£©
+        # è·å–å¼€æˆ·ä¿¡æ¯å“åº”ä¸­çš„HTMLå†…å®¹ï¼ˆä¸ºåç»­è¯·æ±‚çš„åœ°å€å’Œå‚æ•°ï¼‰
         form_data = response.json().get("description").get("form")
         logging.info("form response={}".format(form_data))
-        # ·¢ËÍµÚÈı·½µÄÇëÇó£¬ÇëÇóµÚÈı·½½Ó¿Ú½øĞĞ¿ª»§
+        # å‘é€ç¬¬ä¸‰æ–¹çš„è¯·æ±‚ï¼Œè¯·æ±‚ç¬¬ä¸‰æ–¹æ¥å£è¿›è¡Œå¼€æˆ·
         response = request_third_api(form_data)
         logging.info("third-interface response={}".format(response.text))
-        # ¶ÏÑÔµÚÈı·½½Ó¿ÚÇëÇó´¦ÀíÊÇ·ñ³É¹¦
+        # æ–­è¨€ç¬¬ä¸‰æ–¹æ¥å£è¯·æ±‚å¤„ç†æ˜¯å¦æˆåŠŸ
         self.assertEqual('NetSave OK', response.text)
 
     def test05_get_loaninfo(self):
-        """»ñÈ¡Í¶×Ê²úÆ·ÏêÇé"""
-        # ÇëÇóÍ¶×Ê²úÆ·µÄÏêÇé
+        """è·å–æŠ•èµ„äº§å“è¯¦æƒ…"""
+        # è¯·æ±‚æŠ•èµ„äº§å“çš„è¯¦æƒ…
         response = self.tender_api.get_loaninfo(self.session, self.tender_id)
         logging.info("get_tender response = {}".format(response.json()))
-        # ¶ÏÑÔÍ¶×ÊÏêÇéÊÇ·ñÕıÈ·
+        # æ–­è¨€æŠ•èµ„è¯¦æƒ…æ˜¯å¦æ­£ç¡®
         assert_utils(self, response, 200, 200, "OK")
         self.assertEqual('697', response.json().get("data").get("loan_info").get("id"))
 
     def test06_tender(self):
-        # Í¶×Ê
-        # ·¢ËÍÍ¶×ÊÇëÇó
+        # æŠ•èµ„
+        # å‘é€æŠ•èµ„è¯·æ±‚
         amount = '100'
         response = self.tender_api.tender(self.session, self.tender_id, amount)
         logging.info("tender response = {}".format(response.json()))
-        # ¶ÏÑÔÍ¶×Ê½á¹ûÊÇ·ñÕıÈ·
+        # æ–­è¨€æŠ•èµ„ç»“æœæ˜¯å¦æ­£ç¡®
         self.assertEqual(200, response.status_code)
         self.assertEqual(200, response.json().get("status"))
-        # »ñÈ¡¿ª»§ĞÅÏ¢ÏìÓ¦ÖĞµÄHTMLÄÚÈİ£¨ÎªºóĞøÇëÇóµÄµØÖ·ºÍ²ÎÊı£©
+        # è·å–å¼€æˆ·ä¿¡æ¯å“åº”ä¸­çš„HTMLå†…å®¹ï¼ˆä¸ºåç»­è¯·æ±‚çš„åœ°å€å’Œå‚æ•°ï¼‰
         form_data = response.json().get("description").get("form")
         logging.info("form response={}".format(form_data))
-        # ·¢ËÍµÚÈı·½µÄÇëÇó£¬ÇëÇóµÚÈı·½½Ó¿Ú½øĞĞ¿ª»§
+        # å‘é€ç¬¬ä¸‰æ–¹çš„è¯·æ±‚ï¼Œè¯·æ±‚ç¬¬ä¸‰æ–¹æ¥å£è¿›è¡Œå¼€æˆ·
         response = request_third_api(form_data)
         logging.info("third-interface response={}".format(response.text))
-        # ¶ÏÑÔµÚÈı·½½Ó¿ÚÇëÇó´¦ÀíÊÇ·ñ³É¹¦
+        # æ–­è¨€ç¬¬ä¸‰æ–¹æ¥å£è¯·æ±‚å¤„ç†æ˜¯å¦æˆåŠŸ
         self.assertEqual('InitiativeTender OK', response.text)
 
     def test07_get_tenderlist(self):
-        """»ñÈ¡ÎÒµÄÍ¶×ÊÁĞ±í"""
+        """è·å–æˆ‘çš„æŠ•èµ„åˆ—è¡¨"""
         status = "tender"
-        # ·¢ËÍ»ñÈ¡Í¶×ÊÁĞ±íµÄÇëÇó
+        # å‘é€è·å–æŠ•èµ„åˆ—è¡¨çš„è¯·æ±‚
         response = self.tender_api.get_tenderlist(self.session, status)
         logging.info("get_tender response = {}".format(response.json()))
         self.assertEqual(200, response.status_code)
